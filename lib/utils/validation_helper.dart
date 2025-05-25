@@ -1,6 +1,6 @@
 class ValidationHelper {
   // Regex patterns for validation
-  static final RegExp _titleRegex = RegExp(r'^[a-zA-Z0-9\s\-_.,!?]+$');
+  static final RegExp _titleRegex = RegExp(r'^[a-zA-Z0-9\s\-_.,]+$');
   static final RegExp _amountRegex = RegExp(r'^\d+(\.\d{1,2})?$');
   static final RegExp _descriptionRegex = RegExp(r'^[a-zA-Z0-9\s\-_.,!?\n]*$');
 

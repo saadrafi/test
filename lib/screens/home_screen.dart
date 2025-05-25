@@ -14,7 +14,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final DatabaseHelper _dbHelper = DatabaseHelper();
   List<Expense> _expenses = [];
   double _totalExpenses = 0.0;
   bool _isGridView = false;
@@ -31,8 +30,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _loadExpenses() async {
     setState(() => _isLoading = true);
     try {
-      final expenses = await _dbHelper.getAllExpenses();
-      final total = await _dbHelper.getTotalExpenses();
+      final expenses = await DatabaseHelper.getAllExpenses();
+      final total = await DatabaseHelper.getTotalExpenses();
       setState(() {
         _expenses = expenses;
         _totalExpenses = total;
@@ -52,9 +51,9 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       List<Expense> expenses;
       if (category == 'All') {
-        expenses = await _dbHelper.getAllExpenses();
+        expenses = await DatabaseHelper.getAllExpenses();
       } else {
-        expenses = await _dbHelper.getExpensesByCategory(category);
+        expenses = await DatabaseHelper.getExpensesByCategory(category);
       }
       
       // Apply date filter if active
@@ -107,9 +106,9 @@ class _HomeScreenState extends State<HomeScreen> {
         
         // Start with category filter
         if (_currentCategoryFilter == 'All') {
-          expenses = await _dbHelper.getAllExpenses();
+          expenses = await DatabaseHelper.getAllExpenses();
         } else {
-          expenses = await _dbHelper.getExpensesByCategory(_currentCategoryFilter);
+          expenses = await DatabaseHelper.getExpensesByCategory(_currentCategoryFilter);
         }
         
         // Then apply date filter
@@ -157,7 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _deleteExpense(Expense expense) async {
     try {
-      await _dbHelper.deleteExpense(expense.id!);
+      await DatabaseHelper.deleteExpense(expense.id!);
       _loadExpenses();
       _showSuccessSnackBar('Expense deleted successfully');
     } catch (e) {

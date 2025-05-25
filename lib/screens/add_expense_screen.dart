@@ -17,7 +17,6 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   final _titleController = TextEditingController();
   final _amountController = TextEditingController();
   final _descriptionController = TextEditingController();
-  final DatabaseHelper _dbHelper = DatabaseHelper();
 
   String? _selectedCategory;
   DateTime _selectedDate = DateTime.now();
@@ -85,7 +84,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
             date: _selectedDate,
             createdAt: DateTime.now(),
           );
-          await _dbHelper.insertExpense(expense);
+          await DatabaseHelper.insertExpense(expense);
         } else {
           final updatedExpense = widget.expense!.copyWith(
             title: _titleController.text.trim(),
@@ -97,7 +96,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
             date: _selectedDate,
             // keep original createdAt
           );
-          await _dbHelper.updateExpense(updatedExpense);
+          await DatabaseHelper.updateExpense(updatedExpense);
         }
         if (mounted) {
           Navigator.pop(context, true);

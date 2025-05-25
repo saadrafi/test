@@ -3,19 +3,15 @@ import 'package:path/path.dart';
 import '../models/expense.dart';
 
 class DatabaseHelper {
-  static final DatabaseHelper _instance = DatabaseHelper._internal();
-  factory DatabaseHelper() => _instance;
-  DatabaseHelper._internal();
-
   static Database? _database;
 
-  Future<Database> get database async {
+  static Future<Database> get database async {
     if (_database != null) return _database!;
     _database = await _initDatabase();
     return _database!;
   }
 
-  Future<Database> _initDatabase() async {
+  static Future<Database> _initDatabase() async {
     String path = join(await getDatabasesPath(), 'expense_tracker.db');
     return await openDatabase(
       path,
@@ -24,7 +20,7 @@ class DatabaseHelper {
     );
   }
 
-  Future<void> _onCreate(Database db, int version) async {
+  static Future<void> _onCreate(Database db, int version) async {
     await db.execute('''
       CREATE TABLE expenses(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -38,12 +34,12 @@ class DatabaseHelper {
     ''');
   }
 
-  Future<int> insertExpense(Expense expense) async {
+  static Future<int> insertExpense(Expense expense) async {
     final db = await database;
     return await db.insert('expenses', expense.toMap());
   }
 
-  Future<List<Expense>> getAllExpenses() async {
+  static Future<List<Expense>> getAllExpenses() async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query(
       'expenses',
@@ -52,7 +48,7 @@ class DatabaseHelper {
     return List.generate(maps.length, (i) => Expense.fromMap(maps[i]));
   }
 
-  Future<List<Expense>> getExpensesByCategory(String category) async {
+  static Future<List<Expense>> getExpensesByCategory(String category) async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query(
       'expenses',
@@ -63,7 +59,7 @@ class DatabaseHelper {
     return List.generate(maps.length, (i) => Expense.fromMap(maps[i]));
   }
 
-  Future<List<Expense>> getExpensesByDateRange(DateTime startDate, DateTime endDate) async {
+  static Future<List<Expense>> getExpensesByDateRange(DateTime startDate, DateTime endDate) async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query(
       'expenses',
@@ -74,13 +70,13 @@ class DatabaseHelper {
     return List.generate(maps.length, (i) => Expense.fromMap(maps[i]));
   }
 
-  Future<double> getTotalExpenses() async {
+  static Future<double> getTotalExpenses() async {
     final db = await database;
     final result = await db.rawQuery('SELECT SUM(amount) as total FROM expenses');
     return result.first['total'] as double? ?? 0.0;
   }
 
-  Future<Map<String, double>> getCategoryTotals() async {
+  static Future<Map<String, double>> getCategoryTotals() async {
     final db = await database;
     final result = await db.rawQuery(
       'SELECT category, SUM(amount) as total FROM expenses GROUP BY category'
@@ -92,7 +88,7 @@ class DatabaseHelper {
     return categoryTotals;
   }
 
-  Future<int> updateExpense(Expense expense) async {
+  static Future<int> updateExpense(Expense expense) async {
     final db = await database;
     return await db.update(
       'expenses',
@@ -102,7 +98,7 @@ class DatabaseHelper {
     );
   }
 
-  Future<int> deleteExpense(int id) async {
+  static Future<int> deleteExpense(int id) async {
     final db = await database;
     return await db.delete(
       'expenses',
